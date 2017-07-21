@@ -1,0 +1,22 @@
+{
+  "name": "bamazon",
+  "version": "1.0.0",
+  "description": "An e-commerce project with CRUD capabilities.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bfuller123/bamazon.git"
+  },
+  "author": "Brett Fuller",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bfuller123/bamazon/issues"
+  },
+  "homepage": "https://github.com/bfuller123/bamazon#readme",
+  "dependencies": {
+    "inquirer": "^3.2.0"
+  }
+}
