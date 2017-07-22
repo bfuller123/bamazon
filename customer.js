@@ -9,11 +9,11 @@ var customer = {
   purchases: Object.create(null)
 }
 
-exports.shopperOptions = function () {
+var shopperOptions = function () {
   console.log('-------Products---------');
   for (var i = 0; i < inventoryNames.length; i++) {
     var item = inventoryNames[i]
-    console.log(`${inventory[item].item_id}) ${item} $${inventory[item].price}`);
+    console.log(`${inventory[item].item_id}) ${item} [${inventory[item].department}] $${inventory[item].price}`);
   }
   console.log('---------------------------');
   inquirer.prompt([
@@ -75,7 +75,7 @@ function purchaseMore() {
     }
   ]).then(function(answer){
     if(answer.buymore){
-      exports.shopperOptions();
+      shopperOptions();
     }
     else {
       console.log(`Great! You're total for today is $${customer.total}. Thank you for shopping with us!`);
@@ -117,15 +117,18 @@ function getInventory(){
           item_id: res[i].item_id,
           price: res[i].price,
           stock_quantity: res[i].stock_quantity,
-          department: res[i].department
+          department: res[i].department_name
         };
         inventoryNames.push(res[i].product_name);
       }
+      shopperOptions();
     }
   )
 };
 
-customerConnection.connect(function(err){
-  if(err) throw err;
-  getInventory();
-})
+exports.database = function() {
+  customerConnection.connect(function(err){
+    if(err) throw err;
+    getInventory();
+  });
+}

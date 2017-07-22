@@ -16,7 +16,8 @@ var determinePerson = function(){
   ]).then(function(answers) {
     switch (answers.person) {
       case 'Customer':
-        customer.shopperOptions();
+        customer.database();
+        // customer.shopperOptions();
         break;
       case 'Manager':
         console.log('This is still being built out');
