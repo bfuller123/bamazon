@@ -113,13 +113,15 @@ function getInventory(){
       inventoryNames = [];
       inventory = Object.create(null);
       for (var i = 0; i < res.length; i++) {
-        inventory[res[i].product_name] = {
-          item_id: res[i].item_id,
-          price: res[i].price,
-          stock_quantity: res[i].stock_quantity,
-          department: res[i].department_name
-        };
-        inventoryNames.push(res[i].product_name);
+        if (res[i].stock_quantity > 0) {
+          inventory[res[i].product_name] = {
+            item_id: res[i].item_id,
+            price: res[i].price,
+            stock_quantity: res[i].stock_quantity,
+            department: res[i].department_name
+          };
+          inventoryNames.push(res[i].product_name);
+        }
       }
       shopperOptions();
     }
