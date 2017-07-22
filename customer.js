@@ -10,6 +10,12 @@ var customer = {
 }
 
 exports.shopperOptions = function () {
+  console.log('-------Products---------');
+  for (var i = 0; i < inventoryNames.length; i++) {
+    var item = inventoryNames[i]
+    console.log(`${inventory[item].item_id}) ${item} $${inventory[item].price}`);
+  }
+  console.log('---------------------------');
   inquirer.prompt([
     {
       type: 'list',
@@ -43,28 +49,50 @@ var shopperPurchases = function(item, price) {
       }
     }
   ]).then(function(answers){
-    var totalCost = price * answers.amount;
-    customer.total += totalCost;
-    customer.purchases[item] = answers.amount;
-    console.log(`This adds $${totalCost} to your running total, bringing your total to $${customer.total}.`);
-    inquirer.prompt([
-      {
-        type: 'confirm',
-        name: 'buymore',
-        message: 'Would you like to make any more purchases?',
-        default: true
-      }
-    ]).then(function(answer){
-      if(answer.buymore){
-        exports.shopperOptions();
-      }
-      else {
-        console.log(`Great! You're total for today is $${customer.total}. Thank you for shopping with us!`);
-        process.exit()
-      }
-    })
+    var quantity = inventory[item].stock_quantity;
+
+    if (quantity - answers.amount < 0) {
+      console.log(`Insufficient quantity! We only have ${quantity} of this item left.`);
+      return shopperPurchases(item, price)
+    }
+    else {
+      var totalCost = price * answers.amount;
+      customer.total += totalCost;
+      customer.purchases[item] = answers.amount;
+      console.log(`This adds $${totalCost} to your running total, bringing your total to $${customer.total}.`);
+      updateDatabase(item, answers.amount);
+    }
   })
 };
+
+function purchaseMore() {
+  inquirer.prompt([
+    {
+      type: 'confirm',
+      name: 'buymore',
+      message: 'Would you like to make any more purchases?',
+      default: true
+    }
+  ]).then(function(answer){
+    if(answer.buymore){
+      exports.shopperOptions();
+    }
+    else {
+      console.log(`Great! You're total for today is $${customer.total}. Thank you for shopping with us!`);
+      customerConnection.end();
+      process.exit()
+    }
+  })
+}
+
+function updateDatabase(item, amount) {
+  customerConnection.query(
+    'UPDATE bamazon.products SET stock_quantity = stock_quantity - ' + amount + ' WHERE product_name = "' + item + '"',
+    function(err, res){
+      purchaseMore();
+    }
+  )
+}
 
 function printPrice(item) {
   console.log(`This item costs $${inventory[item].price}.`);
@@ -95,7 +123,6 @@ function getInventory(){
       }
     }
   )
-  // customerConnection.end();
 };
 
 customerConnection.connect(function(err){
