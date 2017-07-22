@@ -4,42 +4,71 @@ const mysql = require('mysql');
 var inventory = Object.create(null);
 var inventoryNames = [];
 
+var customer = {
+  total: 0,
+  purchases: Object.create(null)
+}
+
 exports.shopperOptions = function () {
   inquirer.prompt([
     {
-    type: 'list',
-    name: 'item',
-    message: 'What would you like to purchase?',
-    choices: inventoryNames
+      type: 'list',
+      name: 'item',
+      message: 'What would you like to purchase?',
+      choices: inventoryNames
     }
   ]).then(function(answers){
+    var userTotalPurchase = 0;
     switch (answers.item) {
-      case inventoryNames[0]:
-        console.log(inventory[inventoryNames[0]].price);
-        break;
-      case inventoryNames[1]:
-        console.log(inventory[inventoryNames[1]].price);
-        break;
-      case inventoryNames[2]:
-        console.log(inventory[inventoryNames[2]].price);
-        break;
-      case inventoryNames[3]:
-        console.log(inventory[inventoryNames[3]].price);
-        break;
-      case inventoryNames[4]:
-        console.log(inventory[inventoryNames[4]].price);
-        break;
-      case inventoryNames[5]:
-        console.log(inventory[inventoryNames[5]].price);
-        break;
-      case inventoryNames[6]:
-        console.log(inventory[inventoryNames[6]].price);
-        break;
       default:
-        console.log('Hurray!');
+        printPrice(answers.item)
+        shopperPurchases(answers.item, inventory[answers.item].price);
     }
   })
 };
+
+var shopperPurchases = function(item, price) {
+  inquirer.prompt([
+    {
+      type: 'input',
+      name: 'amount',
+      message: 'How many of this item would you like to purchase?',
+      default: 1,
+      validate: function(value) {
+        value = parseInt(value);
+        if (value !== NaN) {
+          return true;
+        }
+        return "Please input digits only"
+      }
+    }
+  ]).then(function(answers){
+    var totalCost = price * answers.amount;
+    customer.total += totalCost;
+    customer.purchases[item] = answers.amount;
+    console.log(`This adds $${totalCost} to your running total, bringing your total to $${customer.total}.`);
+    inquirer.prompt([
+      {
+        type: 'confirm',
+        name: 'buymore',
+        message: 'Would you like to make any more purchases?',
+        default: true
+      }
+    ]).then(function(answer){
+      if(answer.buymore){
+        exports.shopperOptions();
+      }
+      else {
+        console.log(`Great! You're total for today is $${customer.total}. Thank you for shopping with us!`);
+        process.exit()
+      }
+    })
+  })
+};
+
+function printPrice(item) {
+  console.log(`This item costs $${inventory[item].price}.`);
+}
 
 var customerConnection = mysql.createConnection({
   host: 'localhost',
@@ -66,7 +95,7 @@ function getInventory(){
       }
     }
   )
-  customerConnection.end();
+  // customerConnection.end();
 };
 
 customerConnection.connect(function(err){
