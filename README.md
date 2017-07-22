@@ -7,7 +7,7 @@ The program opens with a prompts the user for identification, giving three possi
 
 
 
-##Customer
+## Customer
 
 After customer is selected, the program will access the customer database to read the inventory of products and print out what is in stock. Also then the customer is given a list of items to choose from for purchase.
 
@@ -30,4 +30,4 @@ After selecting an item, the customer is prompted for the amount of the item the
 The access for the database is limited for the customer to only being able to read from the product table, and update the quantity of items left, and to update the departments table once items are purchased (see **supervisor** section for more details). As you can see in the first picture below, this is the store's inventory before the customer's purchase, and after she has purchased some ballpoint pens, gel pens, jeans, and shirts.
 
 ![opening inventory](/screen_caps/bamazon_starting_inventory.png)
-![closing inventory](/screen_caps/bamazon_closing_inventory.png)
+![closing inventory](/screen_caps/bamazon_ending_inventory.png)
