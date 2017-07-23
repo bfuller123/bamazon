@@ -9,7 +9,7 @@ var customer = {
   purchases: Object.create(null)
 }
 
-var shopperOptions = function () {
+var buyItems = function () {
   console.log('-------Products---------');
   for (var i = 0; i < inventoryNames.length; i++) {
     var item = inventoryNames[i]
@@ -32,6 +32,77 @@ var shopperOptions = function () {
     }
   })
 };
+
+function shopperOptions() {
+  inquirer.prompt([
+    {
+      name: 'options',
+      message: 'What would you like to do?',
+      type: 'list',
+      choices: ['Purchase More Items', 'Remove Items From Cart', 'Checkout']
+    }
+  ]).then(function(answers){
+    switch (answers.options) {
+      case 'Purchase More Items':
+        buyItems();
+        break;
+      case 'Remove Items From Cart':
+        removeItems();
+        break;
+      default:
+        console.log(`Great! You're total for today is $${customer.total}. Thank you for shopping with us!`);
+        customerConnection.end();
+        process.exit()
+    }
+  })
+}
+
+var getCartQuantity = function(item){
+  var itemQuantity = customer.purchases[item];
+  inquirer.prompt([
+    {
+      name: 'quantity',
+      message: 'How many of these would you like to remove from your cart?',
+      default: itemQuantity,
+      validate: function(value){
+        value = parseInt(value);
+        if(value !== NaN && value <= itemQuantity){
+          return true;
+        }
+        console.log('It must be a number less than or equal to the amount of that item in your cart')
+      }
+    }
+  ]).then(function(answers){
+    var quantity = answers.quantity * -1;
+    updateCart(item, quantity, inventory[item].price);
+    updateDatabase(item, quantity);
+  })
+}
+
+function updateCart(item, quantity, price){
+  var totalCost = price * quantity;
+  customer.total += totalCost;
+  if (customer.purchases[item] !== undefined) {
+    customer.purchases[item] += quantity;
+  }
+  else {
+    customer.purchases[item] = quantity;
+  }
+  console.log(`This adds $${totalCost} to your running total, bringing your total to $${customer.total}.`);
+}
+
+function removeItems() {
+  inquirer.prompt([
+    {
+      name: 'remove',
+      message: 'What item would you like to remove from your cart?',
+      type: 'list',
+      choices: Object.keys(customer.purchases)
+    }
+  ]).then(function(answers){
+    getCartQuantity(answers.remove)
+  })
+}
 
 var shopperPurchases = function(item, price) {
   inquirer.prompt([
@@ -56,10 +127,7 @@ var shopperPurchases = function(item, price) {
       return shopperPurchases(item, price)
     }
     else {
-      var totalCost = price * answers.amount;
-      customer.total += totalCost;
-      customer.purchases[item] = answers.amount;
-      console.log(`This adds $${totalCost} to your running total, bringing your total to $${customer.total}.`);
+      updateCart(item, answers.amount, price)
       updateDatabase(item, answers.amount);
     }
   })
@@ -75,7 +143,7 @@ function purchaseMore() {
     }
   ]).then(function(answer){
     if(answer.buymore){
-      shopperOptions();
+      buyItems();
     }
     else {
       console.log(`Great! You're total for today is $${customer.total}. Thank you for shopping with us!`);
@@ -89,7 +157,12 @@ function updateDatabase(item, amount) {
   customerConnection.query(
     'UPDATE bamazon.products SET stock_quantity = stock_quantity - ' + amount + ' WHERE product_name = "' + item + '"',
     function(err, res){
-      purchaseMore();
+      if (customer.total > 0){
+        shopperOptions();
+      }
+      else {
+        buyItems();
+      }
     }
   )
 }
@@ -123,7 +196,7 @@ function getInventory(){
           inventoryNames.push(res[i].product_name);
         }
       }
-      shopperOptions();
+      buyItems();
     }
   )
 };
