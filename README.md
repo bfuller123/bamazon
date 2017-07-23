@@ -31,3 +31,12 @@ The access for the database is limited for the customer to only being able to re
 
 ![opening inventory](/screen_caps/bamazon_starting_inventory.png)
 ![closing inventory](/screen_caps/bamazon_ending_inventory.png)
+
+
+## Manager
+
+The manager has the ability to update inventory stock and prices through out the store. Just like the customer, the manager will be presented with a readout of all of the inventory (including items that are not in stock currently), and he or she can then restock the items, or set their prices.
+
+## Supervisor
+
+This functionality is still under construction. Please check back later.

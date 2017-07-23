@@ -37,7 +37,7 @@ function managerOptions(){
       name: 'option',
       message: 'What would you like to do?',
       type: 'list',
-      choices: ['Stock Inventory', 'Set Prices', 'Clock Out']
+      choices: ['Stock Inventory', 'Set Prices', 'Add New Item', 'Delete Item', 'Clock Out']
     }
   ]).then(function(answers) {
     switch (answers.option) {
@@ -46,6 +46,12 @@ function managerOptions(){
         break;
       case 'Set Prices':
         setPrices();
+        break;
+      case 'Add New Item':
+        addItem();
+        break;
+      case 'Delete Item':
+        deleteItem();
         break;
       case 'Clock Out':
         console.log('Thanks for your hard work!');
@@ -106,6 +112,89 @@ function setPrices() {
     updateDatabase('price', answers.inventory, answers.price);
   })
 };
+
+function addItem() {
+  inquirer.prompt([
+    {
+      name: 'item',
+      message: 'What is the product name you would like to add?',
+      type: 'input',
+      validate: function(value){
+        if(value !== undefined || value !== '' || value !== ' '){
+          if(value.length <= 30){
+            return true;
+          }
+        }
+        console.log('This is a required field and can only be 30 characters long');
+      }
+    },
+    {
+      name: 'price',
+      message: "What is the price of product?",
+      type: 'input',
+      validate: function(value){
+        value = parseFloat(value);
+        if(value !== NaN){
+            return true;
+        }
+        console.log('This is a required field and can have at most one decimal');
+      }
+    },
+    {
+      name: 'inventory',
+      message: "How much of this item would you like to stock?",
+      type: 'input',
+      validate: function(value){
+        value = parseInt(value);
+        if(value !== NaN){
+            return true;
+        }
+        console.log('This is a required field and must be numbers only');
+      }
+    },
+    {
+      name: 'department',
+      message: 'What is the department of the product?',
+      type: 'list',
+      choices: ['board games', 'books', 'household', 'office', 'clothing', 'other']
+    }
+  ]).then(function(answers){
+    addRow(answers.item, answers.price, answers.inventory, answers.department)
+  })
+}
+
+function addRow(item, price, quantity, department) {
+  managerConnection.query(
+    `INSERT INTO bamazon.products (product_name, department_name, price, stock_quantity) VALUES ('${item}', '${department}', ${price}, ${quantity})`,
+    function(err, res) {
+      console.log(`${item} added`);
+      getInventory();
+    }
+  )
+}
+
+function deleteItem() {
+  inquirer.prompt([
+    {
+      name: 'item',
+      type: 'list',
+      message: 'What item would you like to get rid of?',
+      choices: inventoryNames
+    }
+  ]).then(function(answers){
+    deleteRow(answers.item)
+  })
+}
+
+function deleteRow(item) {
+  managerConnection.query(
+    `DELETE FROM bamazon.products WHERE product_name = '${item}'`,
+    function(err, res) {
+      console.log(`${item} deleted`);
+      getInventory();
+    }
+  )
+}
 
 function getInventory(){
   managerConnection.query(
