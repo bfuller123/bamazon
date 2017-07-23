@@ -1,6 +1,7 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql');
 const customer = require('./customer.js');
+const manager = require('./manager.js');
 //manager export  [managerinfo for mysql --- testmanager, password123]
 //Supervisor export  [supervisorinfo for mysql --- testsupervisor, password123]
 
@@ -17,11 +18,9 @@ var determinePerson = function(){
     switch (answers.person) {
       case 'Customer':
         customer.database();
-        // customer.shopperOptions();
         break;
       case 'Manager':
-        console.log('This is still being built out');
-        determinePerson();
+        manager.enterPassword();
         break;
       case 'Supervisor':
         console.log('This is still being built out');
