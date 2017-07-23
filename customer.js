@@ -133,25 +133,6 @@ var shopperPurchases = function(item, price) {
   })
 };
 
-function purchaseMore() {
-  inquirer.prompt([
-    {
-      type: 'confirm',
-      name: 'buymore',
-      message: 'Would you like to make any more purchases?',
-      default: true
-    }
-  ]).then(function(answer){
-    if(answer.buymore){
-      buyItems();
-    }
-    else {
-      console.log(`Great! You're total for today is $${customer.total}. Thank you for shopping with us!`);
-      customerConnection.end();
-      process.exit()
-    }
-  })
-}
 
 function updateDatabase(item, amount) {
   customerConnection.query(

@@ -21,6 +21,16 @@ If an item is sold out, it will not appear in the customer's inventory, as they 
 
 ![too few](/screen_caps/customer_toofew.png)
 
+#### Remove Item From Cart
+Once a customer has put an item (purchased an item), they are then allowed to begin removing items from their cart or checking out. They can then choose an item from their cart to remove, and the quantity they would like to remove. If they try to remove more than they have in their cart, an error is thrown.
+
+Once a proper amount is chosen for removal, the program updates both the inventory in the store, and the customer's cart and total.
+
+![new options](/screen_caps/customer_new_options.png)
+![new options](/screen_caps/remove.png)
+
+Just like any store though, we hope our customers don't leave without making a purchase. Unlike any store, we enforce it!
+
 #### Checkout
 After selecting an item, the customer is prompted for the amount of the item they would like to purchase, with a summary of the cost of purchasing all of those items, and then asked if they would like to purchase more. If yes, then they are prompted again for the item they want, and if no, their purchase it totaled out, and the program quits.
 
