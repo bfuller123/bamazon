@@ -14,14 +14,14 @@ After customer is selected, the program will access the customer database to rea
 ![customer select](/screen_caps/customer_select.png)
 
 
-
+#### Purchase Item
 If an item is sold out, it will not appear in the customer's inventory, as they are not able to purchase it. All other items though appear in a carousel list for the customer to choose from, as this is easier for the customer rather than having to type in the exact ID number of the item they would like to purchase. If the customer's purchase would drop the item's quantity below 0, then they are told that they must select fewer of that item.
 
 ![sold out](/screen_caps/customer_soldout.png)
 
 ![too few](/screen_caps/customer_toofew.png)
 
-
+#### Checkout
 After selecting an item, the customer is prompted for the amount of the item they would like to purchase, with a summary of the cost of purchasing all of those items, and then asked if they would like to purchase more. If yes, then they are prompted again for the item they want, and if no, their purchase it totaled out, and the program quits.
 
 ![finished purchase](/screen_caps/customer_closeout.png)
@@ -35,7 +35,28 @@ The access for the database is limited for the customer to only being able to re
 
 ## Manager
 
-The manager has the ability to update inventory stock and prices through out the store. Just like the customer, the manager will be presented with a readout of all of the inventory (including items that are not in stock currently), and he or she can then restock the items, or set their prices.
+The manager has the ability to update inventory stock and prices through out the store. Just like the customer, the manager will be presented with a readout of all of the inventory (including items that are not in stock currently), and he or she can then restock the items, set prices, add new inventory, or delete items.
+
+The first thing we want to do though is ensure that it really is the manager that is doing this, so we ask for their password:
+
+![manager password](/screen_caps/manager_password.png)
+
+Once the password is validated, the inventory is printed for the manager, showing the item, the amount in stock, and the price. Then the options are listed.
+
+![manager inventory](/screen_caps/manager_inventory.png)
+
+#### Stock Inventory or Set Price
+If the manager chooses to restock an item, or set it's price, it will run through prompts similar to that of purchasing an item where it get's the item's name and the quantity or price and then update the database accordingly.
+
+#### Add New Item and Delete Items
+If the manager chooses to add a new item, it will prompt the manager for the item's name, price, how much to stock this first time, and a list of the current departments to choose from.
+
+![manager inventory](/screen_caps/manager_add_item.png)
+
+Once the item has been added, it will then add the item to the inventory and reprint the inventory.
+If the manager is unhappy with an item though, he or she can delete it from the inventory simply by choosing the delete item, and then selecting the item from a list.
+
+Clock out works just like checking out for the customer, and closes the program.
 
 ## Supervisor
 
