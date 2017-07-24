@@ -113,10 +113,10 @@ var shopperPurchases = function(item, price) {
       default: 1,
       validate: function(value) {
         value = parseInt(value);
-        if (value !== NaN) {
+        if (value !== NaN && value > -1) {
           return true;
         }
-        return "Please input digits only"
+        return "Positive amounts only, please."
       }
     }
   ]).then(function(answers){
